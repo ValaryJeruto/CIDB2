@@ -6,9 +6,9 @@ import pymysql
 
 # window size
 window = tkinter.Tk()
-window.geometry("1400x2400")
+window.geometry("1400x700")
 window.title("Case Investigation Form for covid-19")
-window.resizable(0, 0)
+# window.resizable(0, 0)
 
 # frame
 frame = Frame(window, width=2500, height=2500, bg='black', bd=1)
@@ -67,7 +67,7 @@ def submit():
                     ' Vaccination VARCHAR(3) NULL DEFAULT NULL,SexAtBirth VARCHAR(6) NULL DEFAULT NULL,' \
                     'PRIMARY KEY (`IdBirtCertNo`))'
             cur.execute(query)
-            messagebox.showinfo('success', 'fields created successfully')
+            # messagebox.showinfo('success', 'fields created successfully')
         except:
             cur.execute('use case_ivestication_db')
             query = 'insert into personal_information(FirstName,SecondName,IdBirtCertNo, PhoneNumber, ' \
@@ -83,29 +83,53 @@ def submit():
                 Vaccination_combobox_entry.get(), SexAtBirth_combobox_entry.get()))
             db.commit()
             db.cursor()
-            messagebox.showinfo('success', 'successfully submitted')
+            # messagebox.showinfo('success', 'successfully submitted')
 
-    # FName = FirstName_entry.get()
-    # SName = SecondName_entry.get()
-    # ID_No = IdBirtCertNo_entry.get()
-    # Phone_no = PhoneNumber_entry.get()
-    # County = CountyOfResidence_entry.get()
-    # Sub_County = SubCounty_entry.get()
-    # Ward = Ward_entry.get()
+            if PatientId.get() == '':
+                messagebox.showerror('Alert', 'please The Patients ID')
+            elif PatientClinicalCourse_combobox.get() == '':
+                messagebox.showerror('Alert', 'please select the patients clinical course')
+            elif Ventilation_combobox.get() == '':
+                messagebox.showerror('Alert', 'please enter the ventilation filed')
+            elif HealthStatus_combobox.get() == '':
+                messagebox.showerror('Alert', 'please enter The patients health status')
+            elif PatientSymptoms.get() == '':
+                messagebox.showerror('Alert', 'please enter the patients symptoms')
+            elif PatientSigns.get() == '':
+                messagebox.showerror('Alert', 'please enter the patients signs')
+            elif Temperature.get() == '':
+                messagebox.showerror('Alert', 'please enter the patients temperature')
+            elif UnderlingCondtions.get() == '':
+                messagebox.showerror('Alert', 'please enter the patients underling conditions')
+            else:
+                db = pymysql.connect(host='127.0.0.1', user='root', password='Jakakiimba9#',
+                                     database='case_ivestication_db')
+                cur = db.cursor()
+        try:
+            query = 'create database case_ivestication_db if not exist '
+            cur.execute(query)
+            query = 'use case_ivestication_db'
+            cur.execute(query)
+            query = 'create table clinical_information (PatientId INT NOT NULL,' \
+                    'PatientClinicalCourse VARCHAR(15) NOT NULL,Ventilation CHAR(3) NULL DEFAULT NULL,' \
+                    'HealthStatus VARCHAR(11) NULL, PatientSymptoms VARCHAR(7) NULL DEFAULT NULL,' \
+                    'PatientSigns VARCHAR(6) NULL DEFAULT NULL, Temparature FLOAT NULL DEFAULT NULL,' \
+                    'UnderlyingConditions VARCHAR(4) NULL DEFAULT NULL,Personal_Information_IdBirtCertNo INT NOT NULL'
+            cur.execute(query)
+        # messagebox.showinfo('success', 'fields created')
 
-
-# Residence = Village_entry.get()
-# Dob = YearOfBirth_entry.get()
-# Email = EmailAddress_entry.get()
-# Test = TestStatus_combobox_entry.get()
-# Reason = ReasonForTesting_combobox_entry.get()
-# Vaccinated = Vaccination_combobox_entry.get()
-# Sex = SexAtBirth_combobox_entry.get()
-
-# print("FName:", FirstName, "SName:", SecondName, "ID_No:", IdBirtCertNo, "Phone_no:", PhoneNumber, "County :",
-#     CountyOfResidence, "SubCounty:", SubCounty, "Ward :", Ward, "Residence :", Village, "Dob:",
-#     YearOfBirth, "Email:", EmailAddress, "Test:", TestStatus, "Reason:",
-#   ReasonForTesting, "Vaccinated:", Vaccination, "Sex:", SexAtBirth)
+        except:
+            cur.execute('use case_ivestication_db')
+            query = 'insert into clinical_information(PatientId ,PatientClinicalCourse,Ventilation ,' \
+                    'HealthStatus, PatientSymptoms,PatientSigns,Temparature, UnderlyingConditions,'\
+                    'Personal_Information_IdBirtCertNo, VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        cur.execute(query, (PatientId.get(), PatientClinicalCourse_combobox.get(), Ventilation_combobox.get(),
+                            HealthStatus_combobox.get(), PatientSymptoms.get(),
+                            PatientSigns.get(), Temperature.get(), UnderlingCondtions.get(),
+                            Personal_Information_IdBirtCertNo.get()))
+        db.commit()
+        db.cursor()
+        messagebox.showinfo('success', 'done')
 
 
 # selection01;personal information
@@ -157,7 +181,6 @@ Village.grid(row=5, column=1)
 Village_entry = tkinter.Entry(user_info_frame)
 Village_entry.grid(row=5, column=2)
 
-
 YearOfBirth = tkinter.Label(user_info_frame, text="Year of Birth:", fg='#97ffff', bg='black',
                             font=('calibre', 10, 'bold'))
 YearOfBirth.grid(row=6, column=1)
@@ -195,100 +218,124 @@ SexAtBirth_combobox_entry.grid(row=7, column=4)
 lbl4 = Button(user_info_frame, text="Submit", command=submit, width=10, borderwidth=3, height=1, fg='white',
               bg='#7f7fff',
               cursor='hand2', border=2, font=('#57a1f8', 10, 'bold'))
-lbl4.grid(row=8, column=0)
+lbl4.grid(row=7, column=0)
 
 for widget in user_info_frame.winfo_children():
-    widget.grid_configure(padx=10, pady=10)
+    widget.grid_configure(padx=10, pady=15)
 
 # selection02; clinical information
 clinic_info_frame = tkinter.LabelFrame(frame, text="clinical information", fg='#97ffff', bg='black',
                                        font="calibre 20 bold")
 clinic_info_frame.grid(row=1, column=1, sticky="news", padx=5, pady=5)
 
-lbl4 = tkinter.Label(clinic_info_frame, text="Patient clinical course", fg='#97ffff', bg='black',
-                     font=('calibre', 10, 'bold'))
-lbl4.grid(row=1, column=1)
-lbl4_combobox = ttk.Combobox(clinic_info_frame, values=["Asymptomatic", "Symptomatic", "Unknown"])
-lbl4_combobox.grid(row=1, column=3)
+PatientId = tkinter.Label(clinic_info_frame, text="Patient ID :", fg='#97ffff', bg='black',
+                          font=('calibre', 10, 'bold'))
+PatientId.grid(row=2, column=0, )
+PatientId = tkinter.Entry(clinic_info_frame)
+PatientId.grid(row=2, column=1, )
 
-lbl5 = tkinter.Label(clinic_info_frame, text="Ventilated", fg='#97ffff', bg='black', font=('calibre', 10, 'bold'))
-lbl5_combobox = ttk.Combobox(clinic_info_frame, values=["Yes", "No"])
-lbl5.grid(row=2, column=1)
-lbl5_combobox.grid(row=2, column=3)
+PatientClinicalCourse = tkinter.Label(clinic_info_frame, text="Patient Clinical Course :", fg='#97ffff', bg='black',
+                                      font=('calibre', 10, 'bold'))
+PatientClinicalCourse.grid(row=3, column=0, )
+PatientClinicalCourse_combobox = ttk.Combobox(clinic_info_frame, values=["Asymptomatic", "Symptomatic", "Unknown"])
+PatientClinicalCourse_combobox.grid(row=3, column=1, )
 
-lbl6 = tkinter.Label(clinic_info_frame, text="Health Status", fg='#97ffff', bg='black', font=('calibre', 10, 'bold'))
-lbl6_combobox = ttk.Combobox(clinic_info_frame, values=["Stable", "Severely ill", "Dead"])
-lbl6.grid(row=3, column=1)
-lbl6_combobox.grid(row=3, column=3)
+Ventilation = tkinter.Label(clinic_info_frame, text="Ventilated", fg='#97ffff', bg='black',
+                            font=('calibre', 10, 'bold'))
+Ventilation_combobox = ttk.Combobox(clinic_info_frame, values=["Yes", "No"])
+Ventilation.grid(row=4, column=0)
+Ventilation_combobox.grid(row=4, column=1)
 
-lbl6 = tkinter.Label(clinic_info_frame, text="Patient symptoms (Number all selected symptoms)", fg='#97ffff',
-                     bg='black', font=('calibre', 10, 'bold'))
-lbl6.grid(row=4, column=1)
+HealthStatus = tkinter.Label(clinic_info_frame, text="Health Status", fg='#97ffff',
+                             bg='black', font=('calibre', 10, 'bold'))
+HealthStatus_combobox = ttk.Combobox(clinic_info_frame, values=["Stable", "Severely ill", "Dead"])
+HealthStatus.grid(row=5, column=0)
+HealthStatus_combobox.grid(row=5, column=1)
 
-lbl7 = tkinter.Label(clinic_info_frame, text="Patient signs (Number all reported signs)", fg='#97ffff', bg='black',
-                     font=('calibre', 10, 'bold'))
-lbl7.grid(row=5, column=1)
+PatientSymptoms = tkinter.Label(clinic_info_frame, text="Patient symptoms)",
+                                fg='#97ffff', bg='black', font=('calibre', 10, 'bold'))
+PatientSymptoms.grid(row=2, column=2)
+PatientSymptoms = tkinter.Entry(clinic_info_frame)
+PatientSymptoms.grid(row=2, column=3, )
 
-lbl8 = tkinter.Label(clinic_info_frame, text="Temperature\n( in degrees celsius)", fg='#97ffff', bg='black',
-                     font=('calibre', 10, 'bold'))
-lbl8.grid(row=6, column=1)
-lbl8 = tkinter.Entry(clinic_info_frame)
-lbl8.grid(row=6, column=3, )
+PatientSigns = tkinter.Label(clinic_info_frame, text="Patient signs \n (Number all reported signs)",
+                             fg='#97ffff', bg='black', font=('calibre', 10, 'bold'))
+PatientSigns.grid(row=3, column=2)
+PatientSigns = tkinter.Entry(clinic_info_frame)
+PatientSigns.grid(row=3, column=3)
 
-lbl9 = Button(clinic_info_frame, text="Enter", command=submit, width=10, borderwidth=3, height=1, fg='white',
-              bg='#7f7fff',
-              cursor='hand2', border=2, font=('#57a1f8', 10, 'bold'))
-lbl9.grid(row=7, column=0)
+Temperature = tkinter.Label(clinic_info_frame, text="Temparature\n( in degrees celsius)", fg='#97ffff', bg='black',
+                            font=('calibre', 10, 'bold'))
+Temperature.grid(row=4, column=2)
+Temperature = tkinter.Entry(clinic_info_frame)
+Temperature.grid(row=4, column=3, )
+
+UnderlingCondtions = tkinter.Label(clinic_info_frame, text="Patient underling conditions :", fg='#97ffff', bg='black',
+                                   font=('calibre', 10, 'bold'))
+UnderlingCondtions.grid(row=5, column=2)
+UnderlingCondtions = tkinter.Entry(clinic_info_frame)
+UnderlingCondtions.grid(row=5, column=3)
+
+Personal_Information_IdBirtCertNo = tkinter.Label(clinic_info_frame, text="Personal info Id/ :\n(Birth cert No) ",
+                                                  fg='#97ffff', bg='black', font=('calibre', 10, 'bold'))
+Personal_Information_IdBirtCertNo.grid(row=6, column=2)
+Personal_Information_IdBirtCertNo = tkinter.Entry(clinic_info_frame)
+Personal_Information_IdBirtCertNo.grid(row=6, column=3)
+
+Submitbtn = Button(clinic_info_frame, text="Submit", command=submit, width=10, borderwidth=3, height=1, fg='white',
+                   bg='#7f7fff', cursor='hand2', border=2, font=('#57a1f8', 10, 'bold'))
+Submitbtn.grid(row=6, column=0)
 
 for widget in clinic_info_frame.winfo_children():
-    widget.grid_configure(padx=5, pady=5)
+    widget.grid_configure(padx=10, pady=10)
 
 # selection03; Exposure and travel information in 14 days prior to symptoms.
 
 exp_trav_info = tkinter.LabelFrame(frame, text="Exposure and travel information", fg='#97ffff', bg='black',
                                    font="calibre 20 bold")
 exp_trav_info.grid(row=1, column=0, sticky="news", padx=5, pady=5)
-
-llb1 = tkinter.Label(exp_trav_info, text="Occupation\n (Number any that apply)", fg='#97ffff', bg='black',
+Occupation = tkinter.Label(exp_trav_info, text="Occupation\n (Number any that apply)", fg='#97ffff', bg='black',
                      font=('calibre', 10, 'bold'))
-llb1.grid(row=2, column=1)
+Occupation.grid(row=2, column=0)
+Occupation = tkinter.Entry(exp_trav_info)
+Occupation.grid(row=2, column=1)
 
-llb2 = tkinter.Label(exp_trav_info, text="Travelled\n 1. yes(specify) \n 2. No", fg='#97ffff', bg='black',
+Travelled = tkinter.Label(exp_trav_info, text="Travelled\n 1. yes(specify) \n 2. No", fg='#97ffff', bg='black',
                      font=('calibre', 10, 'bold'))
-llb2.grid(row=3, column=1)
-llb2 = tkinter.Entry(exp_trav_info)
-llb2.grid(row=3, column=2)
+Travelled.grid(row=3, column=0)
+Travelled = tkinter.Entry(exp_trav_info)
+Travelled.grid(row=3, column=1)
 
-llb3 = tkinter.Label(exp_trav_info, text="Visited any health facility(ies)", fg='#97ffff', bg='black',
+VisitedAnyHealthFacility = tkinter.Label(exp_trav_info, text="Visited any health facility(ies)", fg='#97ffff', bg='black',
                      font=('calibre', 10, 'bold'))
-llb3.grid(row=4, column=1)
-llb3_combobox = ttk.Combobox(exp_trav_info, values=["Yes", "No"])
-llb3_combobox.grid(row=4, column=2)
+VisitedAnyHealthFacility.grid(row=4, column=0)
+VisitedAnyHealthFacility_combobox = ttk.Combobox(exp_trav_info, values=["Yes", "No"])
+VisitedAnyHealthFacility_combobox.grid(row=4, column=1)
 
-llb4 = tkinter.Label(exp_trav_info, text="Had close contact with an cute respiratory infected person", fg='#97ffff',
-                     bg='black', font=('calibre', 10, 'bold'))
-llb4.grid(row=5, column=1)
-llb4_combobox = ttk.Combobox(exp_trav_info, values=["Unknown", "No", "Yes"])
-llb4_combobox.grid(row=5, column=2)
+ExposureToARIP = tkinter.Label(exp_trav_info, text="Had close contact with an \n cute respiratory "
+                                                   "infected person", fg='#97ffff',bg='black', font=('calibre', 10, 'bold'))
+ExposureToARIP.grid(row=2, column=2)
+ExposureToARIP_combobox = ttk.Combobox(exp_trav_info, values=["Unknown", "No", "Yes"])
+ExposureToARIP_combobox.grid(row=2, column=3)
 
-llb5 = tkinter.Label(exp_trav_info, text="Had contact with a probable confirmed case", fg='#97ffff', bg='black',
+ExposureToPCC = tkinter.Label(exp_trav_info, text="Had contact with \n a probable confirmed case", fg='#97ffff', bg='black',
                      font=('calibre', 10, 'bold'))
-llb5.grid(row=6, column=1)
-llb5_combobox = ttk.Combobox(exp_trav_info, values=["Unknown", "No", "Yes"])
-llb5_combobox.grid(row=6, column=2)
+ExposureToPCC.grid(row=3, column=2)
+ExposureToPCC_combobox = ttk.Combobox(exp_trav_info, values=["Unknown", "No", "Yes"])
+ExposureToPCC_combobox.grid(row=3, column=3)
 
-llb6 = tkinter.Label(exp_trav_info, text="Visited any live animal markets", fg='#97ffff', bg='black',
+VisitedAnyAnimalMarket = tkinter.Label(exp_trav_info, text="Visited any live animal markets", fg='#97ffff', bg='black',
                      font=('calibre', 10, 'bold'))
-llb6.grid(row=7, column=1)
-llb6_combobox = ttk.Combobox(exp_trav_info, values=["Unknown", "No", "Yes"])
-llb6_combobox.grid(row=7, column=2)
+VisitedAnyAnimalMarket.grid(row=4, column=2)
+VisitedAnyAnimalMarket_combobox = ttk.Combobox(exp_trav_info, values=["Unknown", "No", "Yes"])
+VisitedAnyAnimalMarket_combobox.grid(row=4, column=3)
 
 lbl9 = Button(exp_trav_info, text="Submit", command=submit, width=10, borderwidth=3, height=1, fg='white', bg='#7f7fff',
               cursor='hand2', border=2, font=('#57a1f8', 10, 'bold'))
-lbl9.grid(row=7, column=0)
+lbl9.grid(row=5, column=0)
 
 for widget in exp_trav_info.winfo_children():
-    widget.grid_configure(padx=5, pady=5)
+    widget.grid_configure(padx=1, pady=15)
 
 # section 04; Laboratory information
 

@@ -138,11 +138,11 @@ def submit():
             Vaccination_combobox_entry.get(), SexAtBirth_combobox_entry.get()))
 
         #cur.execute(query, (PatientId.get(), PatientClinicalCoursecombobox.get(), Ventilationcombobox.get(),
-                            #HealthStatuscombobox.get(), PatientSymptoms.get(), PatientSigns.get(),
-                            #Temperature.get(), UnderlingCondtions.get(), personalInformationIdBirtCertNo.get()))
+                           # HealthStatuscombobox.get(), PatientSymptoms.get(), PatientSigns.get(),
+                           # Temperature.get(), UnderlingCondtions.get(), personalInformationIdBirtCertNo.get()))
         db.commit()
         db.cursor()
-        messagebox.showinfo('success', 'successfully submitted')
+        messagebox.showinfo('success', 'fields created successfully')
 
 
 # selection01;personal information

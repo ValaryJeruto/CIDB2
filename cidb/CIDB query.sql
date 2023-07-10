@@ -52,11 +52,11 @@ CREATE TABLE IF NOT EXISTS `case_ivestication_db`.`clinical_information` (
   `PatientSigns` VARCHAR(6) NULL DEFAULT NULL,
   `Temparature` FLOAT NULL DEFAULT NULL,
   `UnderlyingConditions` VARCHAR(4) NULL DEFAULT NULL,
-  `Personal_Information_IdBirtCertNo` INT NOT NULL,
-  PRIMARY KEY (`PatientId`, `Personal_Information_IdBirtCertNo`),
-  INDEX `fk_Clinical_Information_Personal_Information_idx` (`Personal_Information_IdBirtCertNo` ASC) VISIBLE,
+  `PersonalInformationIdBirtCertNo` INT NOT NULL,
+  PRIMARY KEY (`PatientId`, `PersonalInformationIdBirtCertNo`),
+  INDEX `fk_Clinical_Information_Personal_Information_idx` (`PersonalInformationIdBirtCertNo` ASC),
   CONSTRAINT `fk_Clinical_Information_Personal_Information`
-    FOREIGN KEY (`Personal_Information_IdBirtCertNo`)
+    FOREIGN KEY (`PersonalInformationIdBirtCertNo`)
     REFERENCES `case_ivestication_db`.`personal_information` (`IdBirtCertNo`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
